@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default" id="voteTrand">
+            <div class="panel-heading">1. 评分的总体趋势
+                <button type="button" class="btn btn-success btn-xs" style="float: right"
+                        onclick="addImage('voteTrand')">画图
+                </button>
+            </div>
+        </div>
+
+        <div class="panel panel-default" id="voteOfKindsTv">
+            <div class="panel-heading">
+                <h3 class="panel-title">2. 不同类型电视剧的评分
+                    <button type="button" class="btn btn-success btn-xs" style="float: right"
+                            onclick="addImage('voteOfKindsTv')">画图
+                    </button>
+                </h3>
+            </div>
+        </div>
+
+        <div class="panel panel-default" id="voteOfDirector">
+            <div class="panel-heading">
+                <span class="panel-title">3. 导演的平均评分 <button type="button" class="btn btn-success btn-xs"
+                                                             style="float: right" onclick="addImage('voteOfDirector')">画图</button></span>
+            </div>
+
+        </div>
+        <div class="panel panel-default" id="top10voteDirector">
+            <div class="panel-heading">
+                <h3 class="panel-title">4. 评分最高的导演top10
+                    <button type="button" class="btn btn-success btn-xs" style="float: right"
+                            onclick="addImage('top10voteDirector')">画图
+                    </button>
+                </h3>
+            </div>
+        </div>
+        <div class="panel panel-default" id="voteOfActors">
+            <div class="panel-heading">
+                <h3 class="panel-title">5. 演员的评分分布
+                    <button type="button" class="btn btn-success btn-xs" style="float: right"
+                            onclick="addImage('voteOfActors')">画图
+                    </button>
+                </h3>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+
+    function addImage(name) {
+        jQuery.ajaxSetup({cache: false});
+        var nodeName = "#" + name;
+        var pre;
+        var imgName = "tv_" + name + ".png";
+        var childName = name + "1";
+        if (name == "voteTrand") {
+            $(name).empty();
+            pre = "1. 评分的总体趋势";
+        } else if (name == "voteOfKindsTv") {
+            pre = "2. 不同类型电视剧的评分"
+        } else if (name == "voteOfDirector") {
+            pre = "3. 导演的平均评分";
+        } else if (name == "top10voteDirector") {
+            pre = "4. 评分最高的导演top10";
+        } else if (name == "voteOfActors") {
+            pre = "5. 演员的评分分布";
+        }
+
+        var childNameTemp = '#' + childName;
+        console.log(childNameTemp);
+        console.log($(childNameTemp).length);
+        if ($(childNameTemp).length > 0) {
+            $(childNameTemp).remove();
+            return;
+        }
+
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:5000/admin/tv/saveImg",
+            data: {name: name},
+
+            success: function (result) {
+                var s = "<div class=\"panel-heading\">" + pre + " <button type=\"button\" class=\"btn btn-success btn-xs\" style=\"float: right\" onclick=\"addImage('" + name + "')\" >画图</button></div>\n" +
+                    "              <div class=\"panel-body\" id=\"" + childName + "\">\n" +
+                    "                  <div style=\"margin-left: 20%\">\n" +
+                    "                      <img src=\"{{ url_for('admin.static',filename='img/987') }}\">\n" +
+                    "                  </div>\n" +
+                    "              </div>";
+                s = s.replace("987", imgName);
+                console.log(s);
+                if (result == 'success') {
+                    $(nodeName).empty();
+                    $(nodeName).append(s);
+                }
+            }
+        });
+
+
+    }
+</script>
+{% endblock %}
+

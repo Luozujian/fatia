@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12" style="margin-top: 1%">
+        <div class="alert alert-info alert-dismissible" role="alert" id="predict">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>Info!</strong> 预测评分,可供参考！
+        </div>
+    </div>
+
+    <div class="col-md-12">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon1">电视剧名字</span>
+          <input type="text" class="form-control" placeholder="亮剑" aria-describedby="basic-addon1" id="tvName">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon2">电视剧类型</span>
+          <input type="text" class="form-control" placeholder="War,Comedy,Crime" aria-describedby="basic-addon1" id="tvType">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon3">每集时长</span>
+          <input type="text" class="form-control" placeholder="32,默认分钟" aria-describedby="basic-addon1" id="tvTime">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon4">导演</span>
+          <input type="text" class="form-control" placeholder="Guy Ritchie" aria-describedby="basic-addon1" id="director">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon5">演员</span>
+          <input type="text" class="form-control" placeholder="Matt Damon, Kate Winslet, Jude Law" aria-describedby="basic-addon1" id="actors">
+        </div>
+    </div>
+
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon7">产区</span>
+          <input type="text" class="form-control" placeholder="USA" aria-describedby="basic-addon1" id="area">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+         <div class="input-group">
+          <span class="input-group-addon" id="basic-addon8">生产商</span>
+          <input type="text" class="form-control" placeholder="Toff Guy Films" aria-describedby="basic-addon1" id="company">
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top: 1%">
+        <button type="button" class="btn btn-info" onclick="predict()">预测</button>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    
+    function predict() {
+        var tvName = $("#tvName").val();
+        var tvType = $("#tvType").val();
+        var tvTime = $("#tvTime").val();
+        var director = $("#director").val();
+        var actors = $("#actors").val();
+        var area = $("#area").val();
+        var company = $("#company").val();
+
+        $.ajax({
+            type:"GET",
+            //contentType: false,
+            //processData: false,
+            url:"http://localhost:5000/admin/tv/forecast",
+            data:{"tvName":tvName,"tvType":tvType,"tvTime":tvTime,"director":director,"actors":actors,"area":area,"company":company},
+            success: function (result) {
+                $("#predict").empty();
+                item = result
+                console.log(item);
+                s = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n" +
+                    "          <strong>Info!</strong> 预测评分为:"+item+"";
+                $("#predict").append(s);
+            }
+        })
+    }
+
+</script>
+
+
+{% endblock%}
